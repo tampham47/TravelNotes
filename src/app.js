@@ -30,9 +30,11 @@ function render(uri, page) {
     obj = obj.props.layout;
   }
   if (!obj || typeof obj !== 'function') {
-    throw 'Did you set "layout" in "props" for "' + uri + '" route?';
+    // throw 'Did you set "layout" in "props" for "' + uri + '" route?';
+    React.render(child, AppConfig.container);
+  } else {
+    React.render(obj(props, child), AppConfig.container);
   }
-  React.render(obj(props, child), AppConfig.container);
 }
 
 // Initialize a router
@@ -42,6 +44,10 @@ var router = new Router({
   // Main Route
   '/': function() {
     var page = React.createFactory(require('./pages/index'));
+    render(router.getRoute(), page);
+  },
+  '/login': function() {
+    var page = React.createFactory(require('./pages/login'));
     render(router.getRoute(), page);
   },
   '/contact': function() {
@@ -57,7 +63,18 @@ var router = new Router({
     render(router.getRoute(), page);
   }
 });
-
+//
 router.configure({
-  html5history: false
-}).init('/');
+  html5history: false,
+  before: function() {
+    // check auth before access data
+    var token = window.localStorage.getItem('token');
+    if (!token) {
+      var page = React.createFactory(require('./pages/login'));
+      render('login', page);
+      return false;
+    }
+  }
+});
+//
+router.init('/');

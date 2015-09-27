@@ -19,12 +19,16 @@ var RatchetLayout = React.createClass({
     }
   },
 
+  onBackClicked: function() {
+    window.history.back();
+  },
+
   render: function() {
     return (
       <div>
         <header className="bar bar-nav">
           <h1 className="title">{ this.props.title || 'title' }</h1>
-          <button className="btn btn-link btn-nav pull-left">
+          <button className="btn btn-link btn-nav pull-left" onClick={this.onBackClicked}>
             <span className="icon icon-left-nav"></span>
           </button>
         </header>

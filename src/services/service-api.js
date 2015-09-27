@@ -1,5 +1,6 @@
 'use strict';
 
+var Promise = require('promise');
 var $ = require('jquery');
 var config = require('../config');
 var apiList, result = {};
@@ -13,15 +14,29 @@ apiList = [
 // create functions with each api link
 $.each(apiList, function(index, item) {
   result[item.name] = function(data) {
-    // in this case, 'this' is a object was referenced from Adapter
-    return $.ajax({
-      url: config.apiPath + item.path,
-      type: item.method,
-      headers: {
+    return new Promise(function(resolve, reject) {
+      var token = window.localStorage.getItem('token');
+      var headers = {
         'Content-Type': 'application/json'
-      },
-      cache: false,
-      data: JSON.stringify(data)
+      };
+
+      if (token) {
+        headers.Authorization = 'Token token=' + token;
+      }
+
+      $.ajax({
+        url: config.apiPath + item.path,
+        type: item.method,
+        headers: headers,
+        cache: false,
+        data: JSON.stringify(data),
+        success: function(data) {
+          resolve(data);
+        },
+        error: function(err) {
+          reject(err);
+        }
+      });
     });
   };
 });
