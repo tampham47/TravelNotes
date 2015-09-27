@@ -97,7 +97,7 @@
 	    render(router.getRoute(), page);
 	  },
 	  '/notes': function() {
-	    var page = React.createFactory(__webpack_require__(179));
+	    var page = React.createFactory(__webpack_require__(180));
 	    render(router.getRoute(), page);
 	  }
 	});
@@ -109,6 +109,7 @@
 	    var token = window.localStorage.getItem('token');
 	    if (!token) {
 	      var page = React.createFactory(__webpack_require__(178));
+	      router.setRoute('/login');
 	      render('login', page);
 	      return false;
 	    }
@@ -21357,7 +21358,7 @@
 
 	  onLogoutClicked: function() {
 	    window.localStorage.removeItem('token');
-	    window.location.hash = '/';
+	    window.location.hash = '/login';
 	  },
 
 	  render: function() {
@@ -31695,14 +31696,14 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var RatchetLayout = React.createFactory(__webpack_require__(160));
+	var Layout = React.createFactory(__webpack_require__(179));
 	var ServiceApi = __webpack_require__(167);
 
 	var HomePage = React.createClass({displayName: "HomePage",
 
 	  getDefaultProps: function() {
 	    return {
-	      layout: RatchetLayout,
+	      layout: Layout,
 	      title: 'Login'
 	    };
 	  },
@@ -31742,11 +31743,11 @@
 	    return (
 	      React.createElement("div", null, 
 	        React.createElement("div", {className: "login-panel"}, 
+	          React.createElement("div", {className: "gray-layer"}), 
 	          React.createElement("form", null, 
-	            React.createElement("p", {className: "login-label"}, "Enter your name"), 
 	            React.createElement("input", {type: "text", name: "userName", ref: "userName", placeholder: "Your Name", 
 	              value: this.state.model.userName, onChange: this.onChange}), 
-	            React.createElement("button", {className: "btn-add u-full-width", onClick: this.onLoginClicked}, "Login")
+	            React.createElement("button", {className: "u-full-width", onClick: this.onLoginClicked}, "Login")
 	          )
 	        )
 	      )
@@ -31759,6 +31760,36 @@
 
 /***/ },
 /* 179 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * @jsx React.DOM
+	 */
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var RatchetLayout = React.createClass({displayName: "RatchetLayout",
+	  getDefaultProps: function() {
+	    return {};
+	  },
+
+	  render: function() {
+	    return (
+	      React.createElement("div", null, 
+	        React.createElement("div", {className: "container-ratchet login-page"}, 
+	          this.props.children
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = RatchetLayout;
+
+
+/***/ },
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**

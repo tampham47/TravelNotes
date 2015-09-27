@@ -63,6 +63,7 @@ router.configure({
     var token = window.localStorage.getItem('token');
     if (!token) {
       var page = React.createFactory(require('./pages/login'));
+      router.setRoute('/login');
       render('login', page);
       return false;
     }

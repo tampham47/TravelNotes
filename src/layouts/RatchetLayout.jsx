@@ -21,7 +21,7 @@ var RatchetLayout = React.createClass({
 
   onLogoutClicked: function() {
     window.localStorage.removeItem('token');
-    window.location.hash = '/';
+    window.location.hash = '/login';
   },
 
   render: function() {

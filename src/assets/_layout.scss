@@ -22,6 +22,14 @@
   overflow-y: scroll;
   width: 100%;
   overflow-x: hidden;
+
+  &.login-page {
+    top: 0;
+    bottom: 0;
+    padding-top: 150px;
+    background-image: url(http://previews.123rf.com/images/rrraven/rrraven1206/rrraven120600015/13941016-Travel-background-Stock-Vector-travel-liberty-statue.jpg);
+    background-size: cover;
+  }
 }
 
 .pull-right {
@@ -51,12 +59,34 @@ li {
 
 // TravelNotes Styles
 .login-panel {
-  // position: absolute;
-  // top: 50%;
+  padding: 20px;
+  position: relative;
+
+  .gray-layer {
+    position: absolute;
+    background-color: whitesmoke;
+    opacity: 0.8;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0
+  }
+
+  form {
+    margin-bottom: 0;
+    position: relative;
+
+    input {
+      text-align: center;
+    }
+  }
 }
 
 .login-label {
   margin-bottom: 0;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .user-list {

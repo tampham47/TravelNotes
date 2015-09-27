@@ -4,14 +4,14 @@
 'use strict';
 
 var React = require('react');
-var RatchetLayout = React.createFactory(require('../layouts/RatchetLayout'));
+var Layout = React.createFactory(require('../layouts/LoginLayout'));
 var ServiceApi = require('../services/service-api');
 
 var HomePage = React.createClass({
 
   getDefaultProps: function() {
     return {
-      layout: RatchetLayout,
+      layout: Layout,
       title: 'Login'
     };
   },
@@ -51,11 +51,11 @@ var HomePage = React.createClass({
     return (
       <div>
         <div className="login-panel">
+          <div className="gray-layer"></div>
           <form>
-            <p className="login-label">Enter your name</p>
             <input type="text" name='userName' ref='userName' placeholder="Your Name"
               value={this.state.model.userName} onChange={this.onChange} />
-            <button className="btn-add u-full-width" onClick={this.onLoginClicked}>Login</button>
+            <button className="u-full-width" onClick={this.onLoginClicked}>Login</button>
           </form>
         </div>
       </div>
