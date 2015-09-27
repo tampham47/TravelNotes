@@ -31517,8 +31517,20 @@
 	    dataContext[index].visited = e.target.checked;
 	    this.setState({dataContext: dataContext});
 
+	    this._udpateData(dataContext);
+	  },
+
+	  onRemoveClicked: function(index) {
+	    var dataContext = this.state.dataContext;
+	    dataContext.splice(index, 1);
+	    this.setState({dataContext: dataContext});
+
+	    this._udpateData(dataContext);
+	  },
+
+	  _udpateData: function(data) {
 	    ServiceApi.updateTravel({
-	      destinations: dataContext,
+	      destinations: data,
 	      params: {userId: this.state.userId},
 	    })
 	    .then(function(data){
@@ -31527,27 +31539,35 @@
 	  },
 
 	  render: function() {
+	    var renderNotes = '';
+	    if (this.state.dataContext.length > 0) {
+	      renderNotes = (
+	        React.createElement("div", null, 
+	          React.createElement("p", {className: "login-label"}, "Your notes"), 
+	          React.createElement("ul", {className: "table-view"}, 
+	            this.state.dataContext.map(function(des, i) {
+	              return (
+	                React.createElement("li", {className: "table-view-cell", key: i}, 
+	                  React.createElement("span", null, 
+	                    React.createElement("input", {id: "check-box-"+this.state.user+i, type: "checkbox", "data-check": true, 
+	                      checked: des.visited, onChange: this.onChange.bind(null, i)}), 
+	                    React.createElement("label", {htmlFor: "check-box-"+this.state.user+i}, React.createElement("span", null)), " ", des.name
+	                  ), 
+	                  React.createElement("button", {className: "remove", onClick: this.onRemoveClicked.bind(null, i)}, "✖")
+	                )
+	              )
+	            }.bind(this))
+	          )
+	        )
+	      )
+	    }
+
 	    return (
 	      React.createElement("div", null, 
 	        React.createElement("form", null, 
 	          React.createElement("input", {type: "text", placeholder: "Enter your destination"})
 	        ), 
-
-	        React.createElement("p", {className: "login-label"}, "Your notes"), 
-	        React.createElement("ul", {className: "table-view"}, 
-	          this.state.dataContext.map(function(des, i) {
-	            return (
-	              React.createElement("li", {className: "table-view-cell", key: i}, 
-	                React.createElement("span", null, 
-	                  React.createElement("input", {id: "check-box-"+this.state.user+i, type: "checkbox", "data-check": true, 
-	                    checked: des.visited, onChange: this.onChange.bind(null, i)}), 
-	                  React.createElement("label", {htmlFor: "check-box-"+this.state.user+i}, React.createElement("span", null)), " ", des.name
-	                ), 
-	                React.createElement("button", {className: "remove"}, "✖")
-	              )
-	            )
-	          }.bind(this))
-	        )
+	        renderNotes
 	      )
 	    );
 	  }

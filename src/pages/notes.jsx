@@ -46,8 +46,20 @@ var ContactPage = React.createClass({
     dataContext[index].visited = e.target.checked;
     this.setState({dataContext: dataContext});
 
+    this._udpateData(dataContext);
+  },
+
+  onRemoveClicked: function(index) {
+    var dataContext = this.state.dataContext;
+    dataContext.splice(index, 1);
+    this.setState({dataContext: dataContext});
+
+    this._udpateData(dataContext);
+  },
+
+  _udpateData: function(data) {
     ServiceApi.updateTravel({
-      destinations: dataContext,
+      destinations: data,
       params: {userId: this.state.userId},
     })
     .then(function(data){
@@ -56,27 +68,35 @@ var ContactPage = React.createClass({
   },
 
   render: function() {
+    var renderNotes = '';
+    if (this.state.dataContext.length > 0) {
+      renderNotes = (
+        <div>
+          <p className="login-label">Your notes</p>
+          <ul className="table-view">
+            {this.state.dataContext.map(function(des, i) {
+              return (
+                <li className="table-view-cell" key={i}>
+                  <span>
+                    <input id={"check-box-"+this.state.user+i} type="checkbox" data-check
+                      checked={des.visited} onChange={this.onChange.bind(null, i)} />
+                    <label htmlFor={"check-box-"+this.state.user+i}><span></span></label> {des.name}
+                  </span>
+                  <button className="remove" onClick={this.onRemoveClicked.bind(null, i)}>✖</button>
+                </li>
+              )
+            }.bind(this))}
+          </ul>
+        </div>
+      )
+    }
+
     return (
       <div>
         <form>
           <input type="text" placeholder="Enter your destination" />
         </form>
-
-        <p className="login-label">Your notes</p>
-        <ul className="table-view">
-          {this.state.dataContext.map(function(des, i) {
-            return (
-              <li className="table-view-cell" key={i}>
-                <span>
-                  <input id={"check-box-"+this.state.user+i} type="checkbox" data-check
-                    checked={des.visited} onChange={this.onChange.bind(null, i)} />
-                  <label htmlFor={"check-box-"+this.state.user+i}><span></span></label> {des.name}
-                </span>
-                <button className="remove">✖</button>
-              </li>
-            )
-          }.bind(this))}
-        </ul>
+        {renderNotes}
       </div>
     );
   }
