@@ -29,6 +29,16 @@ var ContactPage = React.createClass({
   },
 
   componentDidMount: function() {
+    console.log('componentDidMount');
+    // getInitialState just run once time
+    // so we have to set it again at the next time
+    var user = window.localStorage.getItem('name');
+    var userId = window.localStorage.getItem('id');
+    this.setState({
+      user: user,
+      userId: userId
+    });
+
     ServiceApi.getTravelers({}).then(function(data) {
       var currentData = [];
       var currentUser = this.state.user;
@@ -83,6 +93,7 @@ var ContactPage = React.createClass({
   },
 
   _udpateData: function(data) {
+    console.log('_udpateData', this.state.userId);
     ServiceApi.updateTravel({
       destinations: data,
       params: {userId: this.state.userId},

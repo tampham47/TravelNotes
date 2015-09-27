@@ -21694,6 +21694,7 @@
 	$.each(apiList, function(index, item) {
 	  result[item.name] = function(data) {
 	    return new Promise(function(resolve, reject) {
+	      var path = '';
 	      var token = window.localStorage.getItem('token');
 	      var headers = {
 	        'Content-Type': 'application/json'
@@ -21705,11 +21706,11 @@
 
 	      // replace :userId by real value
 	      data.params = data.params || {};
-	      item.path = item.path.replace(':userId', data.params.userId);
+	      path = item.path.replace(':userId', data.params.userId);
 	      delete data.params;
 
 	      $.ajax({
-	        url: config.apiPath + item.path,
+	        url: config.apiPath + path,
 	        type: item.method,
 	        headers: headers,
 	        cache: false,
@@ -31823,6 +31824,16 @@
 	  },
 
 	  componentDidMount: function() {
+	    console.log('componentDidMount');
+	    // getInitialState just run once time
+	    // so we have to set it again at the next time
+	    var user = window.localStorage.getItem('name');
+	    var userId = window.localStorage.getItem('id');
+	    this.setState({
+	      user: user,
+	      userId: userId
+	    });
+
 	    ServiceApi.getTravelers({}).then(function(data) {
 	      var currentData = [];
 	      var currentUser = this.state.user;
@@ -31877,6 +31888,7 @@
 	  },
 
 	  _udpateData: function(data) {
+	    console.log('_udpateData', this.state.userId);
 	    ServiceApi.updateTravel({
 	      destinations: data,
 	      params: {userId: this.state.userId},

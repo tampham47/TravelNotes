@@ -15,6 +15,7 @@ apiList = [
 $.each(apiList, function(index, item) {
   result[item.name] = function(data) {
     return new Promise(function(resolve, reject) {
+      var path = '';
       var token = window.localStorage.getItem('token');
       var headers = {
         'Content-Type': 'application/json'
@@ -26,11 +27,11 @@ $.each(apiList, function(index, item) {
 
       // replace :userId by real value
       data.params = data.params || {};
-      item.path = item.path.replace(':userId', data.params.userId);
+      path = item.path.replace(':userId', data.params.userId);
       delete data.params;
 
       $.ajax({
-        url: config.apiPath + item.path,
+        url: config.apiPath + path,
         type: item.method,
         headers: headers,
         cache: false,
