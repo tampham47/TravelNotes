@@ -50,16 +50,8 @@ var router = new Router({
     var page = React.createFactory(require('./pages/login'));
     render(router.getRoute(), page);
   },
-  '/contact': function() {
-    var page = React.createFactory(require('./pages/contact'));
-    render(router.getRoute(), page);
-  },
-  '/search': function() {
-    var page = React.createFactory(require('./pages/search'));
-    render(router.getRoute(), page);
-  },
-  '/setting': function() {
-    var page = React.createFactory(require('./pages/setting'));
+  '/notes': function() {
+    var page = React.createFactory(require('./pages/notes'));
     render(router.getRoute(), page);
   }
 });

@@ -11,7 +11,7 @@ var ContactPage = React.createClass({
   getDefaultProps: function() {
     return {
       layout: RatchetLayout,
-      title: 'Contact'
+      title: 'Notes'
     };
   },
 
@@ -19,10 +19,7 @@ var ContactPage = React.createClass({
     return (
       <div>
         <form>
-          <input type="text" placeholder="Full name" />
-          <input type="search" placeholder="Search" />
-          <textarea rows="5"></textarea>
-          <button className="pull-right">Skeleton</button>
+          <input type="text" placeholder="Enter your destination" />
         </form>
       </div>
     );

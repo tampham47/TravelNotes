@@ -23,6 +23,11 @@ var RatchetLayout = React.createClass({
     window.history.back();
   },
 
+  onLogoutClicked: function() {
+    window.localStorage.removeItem('token');
+    window.location.hash = '/';
+  },
+
   render: function() {
     return (
       <div>
@@ -42,17 +47,15 @@ var RatchetLayout = React.createClass({
             <span className="icon icon-home"></span>
             <span className="tab-label">Home</span>
           </a>
-          <a className={ "tab-item " + this.isActive('contact')} href="#/contact">
+          <a className={ "tab-item " + this.isActive('notes')} href="#/notes">
             <span className="icon icon-star-filled"></span>
-            <span className="tab-label">Favorites</span>
+            <span className="tab-label">MyNotes</span>
           </a>
-          <a className={ "tab-item " + this.isActive('search')} href="#/search">
-            <span className="icon icon-search"></span>
-            <span className="tab-label">Search</span>
-          </a>
-          <a className={ "tab-item " + this.isActive('setting')} href="#/setting">
+
+          <a className={ "tab-item " + this.isActive('setting')} href="javascript:;"
+            onClick={this.onLogoutClicked} >
             <span className="icon icon-gear"></span>
-            <span className="tab-label">Settings</span>
+            <span className="tab-label">Logout</span>
           </a>
         </nav>
       </div>

@@ -13,20 +13,65 @@ var HomePage = React.createClass({
   getDefaultProps: function() {
     return {
       layout: RatchetLayout,
-      title: 'Home'
+      title: 'Travel Notes'
+    };
+  },
+
+  getInitialState: function() {
+    return {
+      dataContext: []
     };
   },
 
   componentDidMount: function() {
-    ServiceApi.auth({name: 'Amos'}).then(function(data) {
+    ServiceApi.getTravelers({}).then(function(data) {
       console.log('componentDidMount', data);
+      this.setState({dataContext: data});
+    }.bind(this));
+  },
+
+  renderDestinations: function(notes) {
+    console.log('renderUserList', notes);
+    return (
+      <ul className="table-view">
+        {notes.destinations.map(function(item) {
+          return (
+            <li className="table-view-cell">
+              <a className="navigate-right">
+                {item.name}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  },
+
+  renderUsers: function(users) {
+    return users.map(function(item) {
+      return (
+        <div key={item.id} className="user-list">
+          <h4 className="user-title">{item.name}</h4>
+          <ul className="table-view">
+            {item.destinations.map(function(des, i) {
+              return (
+                <li className="table-view-cell" key={i}>
+                  <a className="navigate-right">
+                    {des.name}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      );
     });
   },
 
   render: function() {
     return (
       <div>
-        <p>HOME PAGE</p>
+        {this.renderUsers(this.state.dataContext)}
       </div>
     );
   }

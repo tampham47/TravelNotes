@@ -855,3 +855,7 @@ li {
 
 .login-label {
   margin-bottom: 0; }
+
+.user-title {
+  text-transform: capitalize;
+  margin-bottom: 0; }
