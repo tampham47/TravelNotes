@@ -93,11 +93,11 @@
 	    render(router.getRoute(), page);
 	  },
 	  '/login': function() {
-	    var page = React.createFactory(__webpack_require__(175));
+	    var page = React.createFactory(__webpack_require__(172));
 	    render(router.getRoute(), page);
 	  },
 	  '/notes': function() {
-	    var page = React.createFactory(__webpack_require__(176));
+	    var page = React.createFactory(__webpack_require__(173));
 	    render(router.getRoute(), page);
 	  }
 	});
@@ -108,7 +108,7 @@
 	    // check auth before access data
 	    var token = window.localStorage.getItem('token');
 	    if (!token) {
-	      var page = React.createFactory(__webpack_require__(175));
+	      var page = React.createFactory(__webpack_require__(172));
 	      render('login', page);
 	      return false;
 	    }
@@ -21274,27 +21274,11 @@
 	  },
 
 	  componentDidMount: function() {
+	    // get data
 	    ServiceApi.getTravelers({}).then(function(data) {
-	      console.log('componentDidMount', data);
+	      console.log('data', data);
 	      this.setState({dataContext: data});
 	    }.bind(this));
-	  },
-
-	  renderDestinations: function(notes) {
-	    console.log('renderUserList', notes);
-	    return (
-	      React.createElement("ul", {className: "table-view"}, 
-	        notes.destinations.map(function(item) {
-	          return (
-	            React.createElement("li", {className: "table-view-cell"}, 
-	              React.createElement("a", {className: "navigate-right"}, 
-	                item.name
-	              )
-	            )
-	          );
-	        })
-	      )
-	    );
 	  },
 
 	  renderUsers: function(users) {
@@ -21306,8 +21290,9 @@
 	            item.destinations.map(function(des, i) {
 	              return (
 	                React.createElement("li", {className: "table-view-cell", key: i}, 
-	                  React.createElement("a", {className: "navigate-right"}, 
-	                    des.name
+	                  React.createElement("span", null, 
+	                    React.createElement("input", {id: "check-box-"+item.name+i, type: "checkbox", "data-check": true, checked: des.visited}), 
+	                    React.createElement("label", {htmlFor: "check-box-"+item.name+i}, React.createElement("span", null)), " ", des.name
 	                  )
 	                )
 	              )
@@ -21355,10 +21340,6 @@
 	    }
 	  },
 
-	  onBackClicked: function() {
-	    window.history.back();
-	  },
-
 	  onLogoutClicked: function() {
 	    window.localStorage.removeItem('token');
 	    window.location.hash = '/';
@@ -21368,10 +21349,7 @@
 	    return (
 	      React.createElement("div", null, 
 	        React.createElement("header", {className: "bar bar-nav"}, 
-	          React.createElement("h1", {className: "title"},  this.props.title || 'title'), 
-	          React.createElement("button", {className: "btn btn-link btn-nav pull-left", onClick: this.onBackClicked}, 
-	            React.createElement("span", {className: "icon icon-left-nav"})
-	          )
+	          React.createElement("h1", {className: "title"},  this.props.title || 'title')
 	        ), 
 
 	        React.createElement("div", {className: "container-ratchet"}, 
@@ -31411,10 +31389,7 @@
 
 
 /***/ },
-/* 172 */,
-/* 173 */,
-/* 174 */,
-/* 175 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31458,7 +31433,10 @@
 	    ServiceApi.auth({name: data.userName})
 	    .then(function(data) {
 	      // set token into localstorage
+	      console.log('data', data);
 	      window.localStorage.setItem('token', data.token);
+	      window.localStorage.setItem('name', data.name);
+	      window.localStorage.setItem('id', data.id);
 	      window.location.hash = '/';
 	    });
 	  },
@@ -31483,7 +31461,7 @@
 
 
 /***/ },
-/* 176 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31493,6 +31471,7 @@
 
 	var React = __webpack_require__(1);
 	var RatchetLayout = React.createFactory(__webpack_require__(160));
+	var ServiceApi = __webpack_require__(161);
 
 	var ContactPage = React.createClass({displayName: "ContactPage",
 
@@ -31503,11 +31482,56 @@
 	    };
 	  },
 
+	  getInitialState: function() {
+	    var user = window.localStorage.getItem('name');
+	    return {
+	      user: user,
+	      dataContext: []
+	    };
+	  },
+
+	  componentDidMount: function() {
+	    ServiceApi.getTravelers({}).then(function(data) {
+	      var currentData = [];
+	      var currentUser = this.state.user;
+
+	      for (var i=0; i<data.length; i++) {
+	        if (data[i].name === currentUser) {
+	          currentData = data[i];
+	        }
+	      }
+
+	      this.setState({dataContext: currentData.destinations});
+	    }.bind(this));
+	  },
+
+	  onChange: function(index, e) {
+	    var dataContext = this.state.dataContext;
+	    dataContext[index].visited = e.target.checked;
+	    this.setState({dataContext: dataContext});
+	  },
+
 	  render: function() {
 	    return (
 	      React.createElement("div", null, 
 	        React.createElement("form", null, 
 	          React.createElement("input", {type: "text", placeholder: "Enter your destination"})
+	        ), 
+
+	        React.createElement("p", {className: "login-label"}, "Your notes"), 
+	        React.createElement("ul", {className: "table-view"}, 
+	          this.state.dataContext.map(function(des, i) {
+	            return (
+	              React.createElement("li", {className: "table-view-cell", key: i}, 
+	                React.createElement("span", null, 
+	                  React.createElement("input", {id: "check-box-"+this.state.user+i, type: "checkbox", "data-check": true, 
+	                    checked: des.visited, onChange: this.onChange.bind(null, i)}), 
+	                  React.createElement("label", {htmlFor: "check-box-"+this.state.user+i}, React.createElement("span", null)), " ", des.name
+	                ), 
+	                React.createElement("button", {className: "remove"}, "✖")
+	              )
+	            )
+	          }.bind(this))
 	        )
 	      )
 	    );
