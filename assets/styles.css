@@ -852,3 +852,6 @@ li {
 
 .bar-tab .tab-item.active, .bar-tab .tab-item:active {
   color: #985321; }
+
+.login-label {
+  margin-bottom: 0; }
