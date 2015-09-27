@@ -18,8 +18,10 @@ var ContactPage = React.createClass({
 
   getInitialState: function() {
     var user = window.localStorage.getItem('name');
+    var userId = window.localStorage.getItem('id');
     return {
       user: user,
+      userId : userId,
       dataContext: []
     };
   },
@@ -43,6 +45,14 @@ var ContactPage = React.createClass({
     var dataContext = this.state.dataContext;
     dataContext[index].visited = e.target.checked;
     this.setState({dataContext: dataContext});
+
+    ServiceApi.updateTravel({
+      destinations: dataContext,
+      params: {userId: this.state.userId},
+    })
+    .then(function(data){
+      console.log('onChange', data);
+    });
   },
 
   render: function() {

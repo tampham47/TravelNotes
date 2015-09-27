@@ -24,6 +24,11 @@ $.each(apiList, function(index, item) {
         headers.Authorization = 'Token token=' + token;
       }
 
+      // replace :userId by real value
+      data.params = data.params || {};
+      item.path = item.path.replace(':userId', data.params.userId);
+      delete data.params;
+
       $.ajax({
         url: config.apiPath + item.path,
         type: item.method,

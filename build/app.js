@@ -21410,6 +21410,11 @@
 	        headers.Authorization = 'Token token=' + token;
 	      }
 
+	      // replace :userId by real value
+	      data.params = data.params || {};
+	      item.path = item.path.replace(':userId', data.params.userId);
+	      delete data.params;
+
 	      $.ajax({
 	        url: config.apiPath + item.path,
 	        type: item.method,
@@ -31484,8 +31489,10 @@
 
 	  getInitialState: function() {
 	    var user = window.localStorage.getItem('name');
+	    var userId = window.localStorage.getItem('id');
 	    return {
 	      user: user,
+	      userId : userId,
 	      dataContext: []
 	    };
 	  },
@@ -31509,6 +31516,14 @@
 	    var dataContext = this.state.dataContext;
 	    dataContext[index].visited = e.target.checked;
 	    this.setState({dataContext: dataContext});
+
+	    ServiceApi.updateTravel({
+	      destinations: dataContext,
+	      params: {userId: this.state.userId},
+	    })
+	    .then(function(data){
+	      console.log('onChange', data);
+	    });
 	  },
 
 	  render: function() {
