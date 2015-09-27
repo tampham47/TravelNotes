@@ -96,16 +96,8 @@
 	    var page = React.createFactory(__webpack_require__(175));
 	    render(router.getRoute(), page);
 	  },
-	  '/contact': function() {
-	    var page = React.createFactory(__webpack_require__(172));
-	    render(router.getRoute(), page);
-	  },
-	  '/search': function() {
-	    var page = React.createFactory(__webpack_require__(173));
-	    render(router.getRoute(), page);
-	  },
-	  '/setting': function() {
-	    var page = React.createFactory(__webpack_require__(174));
+	  '/notes': function() {
+	    var page = React.createFactory(__webpack_require__(176));
 	    render(router.getRoute(), page);
 	  }
 	});
@@ -21271,20 +21263,65 @@
 	  getDefaultProps: function() {
 	    return {
 	      layout: RatchetLayout,
-	      title: 'Home'
+	      title: 'Travel Notes'
+	    };
+	  },
+
+	  getInitialState: function() {
+	    return {
+	      dataContext: []
 	    };
 	  },
 
 	  componentDidMount: function() {
-	    ServiceApi.auth({name: 'Amos'}).then(function(data) {
+	    ServiceApi.getTravelers({}).then(function(data) {
 	      console.log('componentDidMount', data);
+	      this.setState({dataContext: data});
+	    }.bind(this));
+	  },
+
+	  renderDestinations: function(notes) {
+	    console.log('renderUserList', notes);
+	    return (
+	      React.createElement("ul", {className: "table-view"}, 
+	        notes.destinations.map(function(item) {
+	          return (
+	            React.createElement("li", {className: "table-view-cell"}, 
+	              React.createElement("a", {className: "navigate-right"}, 
+	                item.name
+	              )
+	            )
+	          );
+	        })
+	      )
+	    );
+	  },
+
+	  renderUsers: function(users) {
+	    return users.map(function(item) {
+	      return (
+	        React.createElement("div", {key: item.id, className: "user-list"}, 
+	          React.createElement("h4", {className: "user-title"}, item.name), 
+	          React.createElement("ul", {className: "table-view"}, 
+	            item.destinations.map(function(des, i) {
+	              return (
+	                React.createElement("li", {className: "table-view-cell", key: i}, 
+	                  React.createElement("a", {className: "navigate-right"}, 
+	                    des.name
+	                  )
+	                )
+	              )
+	            })
+	          )
+	        )
+	      );
 	    });
 	  },
 
 	  render: function() {
 	    return (
 	      React.createElement("div", null, 
-	        React.createElement("p", null, "HOME PAGE")
+	        this.renderUsers(this.state.dataContext)
 	      )
 	    );
 	  }
@@ -21322,6 +21359,11 @@
 	    window.history.back();
 	  },
 
+	  onLogoutClicked: function() {
+	    window.localStorage.removeItem('token');
+	    window.location.hash = '/';
+	  },
+
 	  render: function() {
 	    return (
 	      React.createElement("div", null, 
@@ -21341,17 +21383,15 @@
 	            React.createElement("span", {className: "icon icon-home"}), 
 	            React.createElement("span", {className: "tab-label"}, "Home")
 	          ), 
-	          React.createElement("a", {className:  "tab-item " + this.isActive('contact'), href: "#/contact"}, 
+	          React.createElement("a", {className:  "tab-item " + this.isActive('notes'), href: "#/notes"}, 
 	            React.createElement("span", {className: "icon icon-star-filled"}), 
-	            React.createElement("span", {className: "tab-label"}, "Favorites")
+	            React.createElement("span", {className: "tab-label"}, "MyNotes")
 	          ), 
-	          React.createElement("a", {className:  "tab-item " + this.isActive('search'), href: "#/search"}, 
-	            React.createElement("span", {className: "icon icon-search"}), 
-	            React.createElement("span", {className: "tab-label"}, "Search")
-	          ), 
-	          React.createElement("a", {className:  "tab-item " + this.isActive('setting'), href: "#/setting"}, 
+
+	          React.createElement("a", {className:  "tab-item " + this.isActive('setting'), href: "javascript:;", 
+	            onClick: this.onLogoutClicked}, 
 	            React.createElement("span", {className: "icon icon-gear"}), 
-	            React.createElement("span", {className: "tab-label"}, "Settings")
+	            React.createElement("span", {className: "tab-label"}, "Logout")
 	          )
 	        )
 	      )
@@ -31371,191 +31411,9 @@
 
 
 /***/ },
-/* 172 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * @jsx React.DOM
-	 */
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var RatchetLayout = React.createFactory(__webpack_require__(160));
-
-	var ContactPage = React.createClass({displayName: "ContactPage",
-
-	  getDefaultProps: function() {
-	    return {
-	      layout: RatchetLayout,
-	      title: 'Contact'
-	    };
-	  },
-
-	  render: function() {
-	    return (
-	      React.createElement("div", null, 
-	        React.createElement("form", null, 
-	          React.createElement("input", {type: "text", placeholder: "Full name"}), 
-	          React.createElement("input", {type: "search", placeholder: "Search"}), 
-	          React.createElement("textarea", {rows: "5"}), 
-	          React.createElement("button", {className: "pull-right"}, "Skeleton")
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = ContactPage;
-
-
-/***/ },
-/* 173 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * @jsx React.DOM
-	 */
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var RatchetLayout = React.createFactory(__webpack_require__(160));
-
-	var SearchPage = React.createClass({displayName: "SearchPage",
-
-	  getDefaultProps: function() {
-	    return {
-	      layout: RatchetLayout,
-	      title: 'Search'
-	    };
-	  },
-
-	  render: function() {
-	    return (
-	      React.createElement("div", null, 
-	        React.createElement("ul", {className: "table-view"}, 
-	          React.createElement("li", {className: "table-view-cell media"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              React.createElement("div", {className: "media-body"}, 
-	                "Item 1", 
-	                React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit")
-	              )
-	            )
-	          ), 
-	          React.createElement("li", {className: "table-view-cell media"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              React.createElement("div", {className: "media-body"}, 
-	                "Item 1", 
-	                React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit")
-	              )
-	            )
-	          ), 
-	          React.createElement("li", {className: "table-view-cell media"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              React.createElement("div", {className: "media-body"}, 
-	                "Item 1", 
-	                React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit")
-	              )
-	            )
-	          ), 
-	          React.createElement("li", {className: "table-view-cell media"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              React.createElement("div", {className: "media-body"}, 
-	                "Item 1", 
-	                React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit")
-	              )
-	            )
-	          ), 
-	          React.createElement("li", {className: "table-view-cell media"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              React.createElement("div", {className: "media-body"}, 
-	                "Item 1", 
-	                React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit")
-	              )
-	            )
-	          ), 
-	          React.createElement("li", {className: "table-view-cell media"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              React.createElement("div", {className: "media-body"}, 
-	                "Item 1", 
-	                React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit")
-	              )
-	            )
-	          ), 
-	          React.createElement("li", {className: "table-view-cell media"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              React.createElement("div", {className: "media-body"}, 
-	                "Item 1", 
-	                React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit")
-	              )
-	            )
-	          ), 
-	          React.createElement("li", {className: "table-view-cell media"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              React.createElement("div", {className: "media-body"}, 
-	                "Item 1", 
-	                React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetur adipisicing elit")
-	              )
-	            )
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = SearchPage;
-
-
-/***/ },
-/* 174 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * @jsx React.DOM
-	 */
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var RatchetLayout = React.createFactory(__webpack_require__(160));
-
-	var SearchPage = React.createClass({displayName: "SearchPage",
-
-	  getDefaultProps: function() {
-	    return {
-	      layout: RatchetLayout,
-	      title: 'Settings'
-	    };
-	  },
-
-	  render: function() {
-	    return (
-	      React.createElement("div", null, 
-	        React.createElement("ul", {className: "table-view"}, 
-	          React.createElement("li", {className: "table-view-cell"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              "Item 1"
-	            )
-	          ), 
-	          React.createElement("li", {className: "table-view-cell"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              "Item 2"
-	            )
-	          ), 
-	          React.createElement("li", {className: "table-view-cell"}, 
-	            React.createElement("a", {className: "navigate-right"}, 
-	              "Item 3"
-	            )
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = SearchPage;
-
-
-/***/ },
+/* 172 */,
+/* 173 */,
+/* 174 */,
 /* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -31622,6 +31480,41 @@
 	});
 
 	module.exports = HomePage;
+
+
+/***/ },
+/* 176 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * @jsx React.DOM
+	 */
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var RatchetLayout = React.createFactory(__webpack_require__(160));
+
+	var ContactPage = React.createClass({displayName: "ContactPage",
+
+	  getDefaultProps: function() {
+	    return {
+	      layout: RatchetLayout,
+	      title: 'Notes'
+	    };
+	  },
+
+	  render: function() {
+	    return (
+	      React.createElement("div", null, 
+	        React.createElement("form", null, 
+	          React.createElement("input", {type: "text", placeholder: "Enter your destination"})
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = ContactPage;
 
 
 /***/ }
