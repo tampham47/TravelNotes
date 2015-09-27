@@ -57,6 +57,26 @@ var ContactPage = React.createClass({
     this._udpateData(dataContext);
   },
 
+  onDestinationChanged: function(e) {
+    this.setState({destination: e.target.value});
+  },
+
+  onAddDestinationClicked: function(e) {
+    e.preventDefault();
+
+    var dataContext = this.state.dataContext;
+    dataContext.push({
+      name: this.state.destination,
+      visited: false
+    });
+
+    this.setState({
+      dataContext: dataContext,
+      destination: ''
+    });
+    this._udpateData(dataContext);
+  },
+
   _udpateData: function(data) {
     ServiceApi.updateTravel({
       destinations: data,
@@ -94,7 +114,9 @@ var ContactPage = React.createClass({
     return (
       <div>
         <form>
-          <input type="text" placeholder="Enter your destination" />
+          <input type="text" placeholder="Enter your destination"
+            value={this.state.destination} onChange={this.onDestinationChanged} />
+          <button className="u-full-width" onClick={this.onAddDestinationClicked}>Add</button>
         </form>
         {renderNotes}
       </div>
