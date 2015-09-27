@@ -31528,6 +31528,26 @@
 	    this._udpateData(dataContext);
 	  },
 
+	  onDestinationChanged: function(e) {
+	    this.setState({destination: e.target.value});
+	  },
+
+	  onAddDestinationClicked: function(e) {
+	    e.preventDefault();
+
+	    var dataContext = this.state.dataContext;
+	    dataContext.push({
+	      name: this.state.destination,
+	      visited: false
+	    });
+
+	    this.setState({
+	      dataContext: dataContext,
+	      destination: ''
+	    });
+	    this._udpateData(dataContext);
+	  },
+
 	  _udpateData: function(data) {
 	    ServiceApi.updateTravel({
 	      destinations: data,
@@ -31565,7 +31585,9 @@
 	    return (
 	      React.createElement("div", null, 
 	        React.createElement("form", null, 
-	          React.createElement("input", {type: "text", placeholder: "Enter your destination"})
+	          React.createElement("input", {type: "text", placeholder: "Enter your destination", 
+	            value: this.state.destination, onChange: this.onDestinationChanged}), 
+	          React.createElement("button", {className: "u-full-width", onClick: this.onAddDestinationClicked}, "Add")
 	        ), 
 	        renderNotes
 	      )
