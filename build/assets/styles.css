@@ -833,7 +833,8 @@ hr {
   bottom: 51px;
   padding: 10px;
   overflow-y: scroll;
-  width: 100%; }
+  width: 100%;
+  overflow-x: hidden; }
 
 .pull-right {
   float: right; }
@@ -918,3 +919,14 @@ button.remove {
   button.remove:active,
   button.remove:hover {
     background-color: white; }
+
+button.btn-add {
+  border: 0;
+  border-bottom: 1px solid whitesmoke;
+  border-radius: 0; }
+
+.loader-wrapper {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 50%; }

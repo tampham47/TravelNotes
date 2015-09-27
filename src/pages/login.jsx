@@ -55,7 +55,7 @@ var HomePage = React.createClass({
             <p className="login-label">Enter your name</p>
             <input type="text" name='userName' ref='userName' placeholder="Your Name"
               value={this.state.model.userName} onChange={this.onChange} />
-            <button className="pull-right" onClick={this.onLoginClicked}>Login</button>
+            <button className="btn-add u-full-width" onClick={this.onLoginClicked}>Login</button>
           </form>
         </div>
       </div>

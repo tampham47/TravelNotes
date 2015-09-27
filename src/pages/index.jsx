@@ -5,6 +5,7 @@
 
 var React = require('react');
 var RatchetLayout = React.createFactory(require('../layouts/RatchetLayout'));
+var Loader = require('halogen/PulseLoader');
 var ServiceApi = require('../services/service-api');
 
 var HomePage = React.createClass({
@@ -19,7 +20,8 @@ var HomePage = React.createClass({
 
   getInitialState: function() {
     return {
-      dataContext: []
+      dataContext: [],
+      isLoading: true
     };
   },
 
@@ -27,7 +29,10 @@ var HomePage = React.createClass({
     // get data
     ServiceApi.getTravelers({}).then(function(data) {
       console.log('data', data);
-      this.setState({dataContext: data});
+      this.setState({
+        dataContext: data,
+        isLoading: false
+      });
     }.bind(this));
   },
 
@@ -54,8 +59,18 @@ var HomePage = React.createClass({
   },
 
   render: function() {
+    var renderLoader = '';
+    if (this.state.isLoading) {
+      renderLoader = (
+        <div className="loader-wrapper">
+          <Loader color="#985321" size="16px" margin="4px" />
+        </div>
+      );
+    }
+
     return (
       <div>
+        {renderLoader}
         {this.renderUsers(this.state.dataContext)}
       </div>
     );

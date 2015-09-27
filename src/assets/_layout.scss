@@ -21,6 +21,7 @@
   padding: $gutter;
   overflow-y: scroll;
   width: 100%;
+  overflow-x: hidden;
 }
 
 .pull-right {
@@ -132,4 +133,18 @@ button.remove {
   &:hover {
     background-color: white;
   }
+}
+
+button.btn-add {
+  border: 0;
+  border-bottom: 1px solid whitesmoke;
+  border-radius: 0;
+}
+
+// loader
+.loader-wrapper {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 50%;
 }

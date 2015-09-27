@@ -5,6 +5,7 @@
 
 var React = require('react');
 var RatchetLayout = React.createFactory(require('../layouts/RatchetLayout'));
+var Loader = require('halogen/PulseLoader');
 var ServiceApi = require('../services/service-api');
 
 var ContactPage = React.createClass({
@@ -22,7 +23,8 @@ var ContactPage = React.createClass({
     return {
       user: user,
       userId : userId,
-      dataContext: []
+      dataContext: [],
+      isLoading: true
     };
   },
 
@@ -37,7 +39,10 @@ var ContactPage = React.createClass({
         }
       }
 
-      this.setState({dataContext: currentData.destinations});
+      this.setState({
+        dataContext: currentData.destinations,
+        isLoading: false
+      });
     }.bind(this));
   },
 
@@ -89,6 +94,16 @@ var ContactPage = React.createClass({
 
   render: function() {
     var renderNotes = '';
+    var renderLoader = '';
+
+    if (this.state.isLoading) {
+      renderLoader = (
+        <div className="loader-wrapper">
+          <Loader color="#985321" size="16px" margin="4px" />
+        </div>
+      );
+    }
+
     if (this.state.dataContext.length > 0) {
       renderNotes = (
         <div>
@@ -113,10 +128,11 @@ var ContactPage = React.createClass({
 
     return (
       <div>
+        {renderLoader}
         <form>
           <input type="text" placeholder="Enter your destination"
             value={this.state.destination} onChange={this.onDestinationChanged} />
-          <button className="u-full-width" onClick={this.onAddDestinationClicked}>Add</button>
+          <button className="btn-add u-full-width" onClick={this.onAddDestinationClicked}>Add</button>
         </form>
         {renderNotes}
       </div>
