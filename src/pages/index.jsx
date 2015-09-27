@@ -24,27 +24,11 @@ var HomePage = React.createClass({
   },
 
   componentDidMount: function() {
+    // get data
     ServiceApi.getTravelers({}).then(function(data) {
-      console.log('componentDidMount', data);
+      console.log('data', data);
       this.setState({dataContext: data});
     }.bind(this));
-  },
-
-  renderDestinations: function(notes) {
-    console.log('renderUserList', notes);
-    return (
-      <ul className="table-view">
-        {notes.destinations.map(function(item) {
-          return (
-            <li className="table-view-cell">
-              <a className="navigate-right">
-                {item.name}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    );
   },
 
   renderUsers: function(users) {
@@ -56,9 +40,10 @@ var HomePage = React.createClass({
             {item.destinations.map(function(des, i) {
               return (
                 <li className="table-view-cell" key={i}>
-                  <a className="navigate-right">
-                    {des.name}
-                  </a>
+                  <span>
+                    <input id={"check-box-"+item.name+i} type="checkbox" data-check checked={des.visited} />
+                    <label htmlFor={"check-box-"+item.name+i}><span></span></label> {des.name}
+                  </span>
                 </li>
               )
             })}

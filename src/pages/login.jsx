@@ -39,7 +39,10 @@ var HomePage = React.createClass({
     ServiceApi.auth({name: data.userName})
     .then(function(data) {
       // set token into localstorage
+      console.log('data', data);
       window.localStorage.setItem('token', data.token);
+      window.localStorage.setItem('name', data.name);
+      window.localStorage.setItem('id', data.id);
       window.location.hash = '/';
     });
   },

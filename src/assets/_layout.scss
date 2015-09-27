@@ -66,3 +66,70 @@ li {
   text-transform: capitalize;
   margin-bottom: 0;
 }
+
+// check box
+input[data-check] {
+  display: none;
+}
+input[data-check] + label {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  height: 24px;
+  width: 44px;
+  margin: 0;
+  margin-right: 15px;
+  overflow: hidden;
+  background: whitesmoke;
+  border-radius: 5px;
+  box-shadow: inset rgba(0,0,0,.1) 0 3px 10px;
+  cursor: pointer;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+input[data-check] + label > span {
+  position: absolute;
+  display: block;
+  width: 20px;
+  height: 20px;
+  top: 2px;
+  left: 2px;
+  background: white;
+  border-radius: 3px;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  box-shadow: rgba(0,0,0,.1) 0 3px 5px;
+}
+input[data-check]:checked + label {
+  background: #985321;
+}
+input[data-check]:checked + label > span {
+  left: 22px;
+}
+
+// remove button
+button.remove {
+  border: 0;
+  float: right;
+  line-height: 12px;
+  height: auto;
+  vertical-align: middle;
+  padding: 15px;
+  margin: -9px -40px -9px 0;
+
+  span {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    background-color: gray;
+    display: block
+  }
+
+  &:active,
+  &:hover {
+    background-color: white;
+  }
+}

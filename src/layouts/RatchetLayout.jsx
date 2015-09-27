@@ -19,10 +19,6 @@ var RatchetLayout = React.createClass({
     }
   },
 
-  onBackClicked: function() {
-    window.history.back();
-  },
-
   onLogoutClicked: function() {
     window.localStorage.removeItem('token');
     window.location.hash = '/';
@@ -33,9 +29,6 @@ var RatchetLayout = React.createClass({
       <div>
         <header className="bar bar-nav">
           <h1 className="title">{ this.props.title || 'title' }</h1>
-          <button className="btn btn-link btn-nav pull-left" onClick={this.onBackClicked}>
-            <span className="icon icon-left-nav"></span>
-          </button>
         </header>
 
         <div className="container-ratchet">
