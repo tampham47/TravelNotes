@@ -93,11 +93,11 @@
 	    render(router.getRoute(), page);
 	  },
 	  '/login': function() {
-	    var page = React.createFactory(__webpack_require__(172));
+	    var page = React.createFactory(__webpack_require__(178));
 	    render(router.getRoute(), page);
 	  },
 	  '/notes': function() {
-	    var page = React.createFactory(__webpack_require__(173));
+	    var page = React.createFactory(__webpack_require__(179));
 	    render(router.getRoute(), page);
 	  }
 	});
@@ -108,7 +108,7 @@
 	    // check auth before access data
 	    var token = window.localStorage.getItem('token');
 	    if (!token) {
-	      var page = React.createFactory(__webpack_require__(172));
+	      var page = React.createFactory(__webpack_require__(178));
 	      render('login', page);
 	      return false;
 	    }
@@ -21255,7 +21255,8 @@
 
 	var React = __webpack_require__(1);
 	var RatchetLayout = React.createFactory(__webpack_require__(160));
-	var ServiceApi = __webpack_require__(161);
+	var Loader = __webpack_require__(161);
+	var ServiceApi = __webpack_require__(167);
 
 	var HomePage = React.createClass({
 	  displayName: 'Home page',
@@ -21269,7 +21270,8 @@
 
 	  getInitialState: function() {
 	    return {
-	      dataContext: []
+	      dataContext: [],
+	      isLoading: true
 	    };
 	  },
 
@@ -21277,7 +21279,10 @@
 	    // get data
 	    ServiceApi.getTravelers({}).then(function(data) {
 	      console.log('data', data);
-	      this.setState({dataContext: data});
+	      this.setState({
+	        dataContext: data,
+	        isLoading: false
+	      });
 	    }.bind(this));
 	  },
 
@@ -21304,8 +21309,18 @@
 	  },
 
 	  render: function() {
+	    var renderLoader = '';
+	    if (this.state.isLoading) {
+	      renderLoader = (
+	        React.createElement("div", {className: "loader-wrapper"}, 
+	          React.createElement(Loader, {color: "#985321", size: "16px", margin: "4px"})
+	        )
+	      );
+	    }
+
 	    return (
 	      React.createElement("div", null, 
+	        renderLoader, 
 	        this.renderUsers(this.state.dataContext)
 	      )
 	    );
@@ -21384,10 +21399,287 @@
 /* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var React = __webpack_require__(1);
+	var assign = __webpack_require__(162);
+	var insertKeyframesRule = __webpack_require__(164);
+
+	/**
+	 * @type {Object}
+	 */
+	var keyframes = {
+	    '0%': {
+	        transform: 'scale(1)',
+	        opacity: 1
+	    },
+	    '45%': {
+	        transform: 'scale(0.1)',
+	        opacity: 0.7
+	    },
+	    '80%': {
+	        transform: 'scale(1)',
+	        opacity: 1
+	    }
+	};
+
+	/**
+	 * @type {String}
+	 */
+	var animationName = insertKeyframesRule(keyframes);
+
+	var Loader = React.createClass({displayName: "Loader",
+	    /**
+	     * @type {Object}
+	     */
+	    propTypes: {
+	        loading: React.PropTypes.bool,
+	        color: React.PropTypes.string,
+	        size: React.PropTypes.string,
+	        margin: React.PropTypes.string
+	    },
+
+	    /**
+	     * @return {Object}
+	     */
+	    getDefaultProps: function() {
+	        return {
+	            loading: true,
+	            color: '#ffffff',
+	            size: '15px',
+	            margin: '2px'
+	        };
+	    },
+
+	    /**
+	     * @return {Object}
+	     */
+	    getBallStyle: function() {
+	        return {
+	            backgroundColor: this.props.color,
+	            width: this.props.size,
+	            height: this.props.size,
+	            margin: this.props.margin,
+	            borderRadius: '100%'
+	        };
+	    },
+
+	    /**
+	     * @param  {Number} i
+	     * @return {Object}
+	     */
+	    getAnimationStyle: function(i) {
+	        var animation = [animationName, '0.75s', (i * 0.12) + 's', 'infinite', 'cubic-bezier(.2,.68,.18,1.08)'].join(' ');
+	        var animationFillMode = 'both';
+
+	        return {
+	            animation: animation,
+	            animationFillMode: animationFillMode
+	        };
+	    },
+
+	    /**
+	     * @param  {Number} i
+	     * @return {Object}
+	     */
+	    getStyle: function(i) {
+	        return assign(
+	            this.getBallStyle(i),
+	            this.getAnimationStyle(i),
+	            {
+	                display: 'inline-block'
+	            }
+	        );
+	    },
+
+	    /**
+	     * @param  {Boolean} loading
+	     * @return {ReactComponent || null}
+	     */
+	    renderLoader: function(loading) {
+	        if (loading) {
+	            return (
+	                React.createElement("div", {id: this.props.id, className: this.props.className}, 
+	                    React.createElement("div", {style: this.getStyle(1)}), 
+	                    React.createElement("div", {style: this.getStyle(2)}), 
+	                    React.createElement("div", {style: this.getStyle(3)})
+	                )
+	            );
+	        }
+
+	        return null;
+	    },
+	    
+	    render: function() {
+	        return this.renderLoader(this.props.loading);
+	    }
+	});
+
+	module.exports = Loader;
+
+
+/***/ },
+/* 162 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
-	var Promise = __webpack_require__(162);
-	var $ = __webpack_require__(171);
+	var getVendorPropertyName = __webpack_require__(163);
+
+	module.exports = function(target, sources) {
+	  var to = Object(target);
+	  var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+	  for (var nextIndex = 1; nextIndex < arguments.length; nextIndex++) {
+	    var nextSource = arguments[nextIndex];
+	    if (nextSource == null) {
+	      continue;
+	    }
+
+	    var from = Object(nextSource);
+
+	    for (var key in from) {
+	      if (hasOwnProperty.call(from, key)) {
+	        to[key] = from[key];
+	      }
+	    }
+	  }
+
+	  var prefixed = {};
+	  for (var key in to) {
+	    prefixed[getVendorPropertyName(key)] = to[key]
+	  }
+
+	  return prefixed
+	}
+
+
+/***/ },
+/* 163 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var builtinStyle = document.createElement('div').style;
+	var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
+	var domVendorPrefix;
+
+	// Helper function to get the proper vendor property name. (transition => WebkitTransition)
+	module.exports = function(prop) {
+	  var vendorProp;
+	  if (prop in builtinStyle) return prop;
+	  var UpperProp = prop.charAt(0).toUpperCase() + prop.substr(1);
+
+	  if (domVendorPrefix) {
+
+	    vendorProp = domVendorPrefix + UpperProp;
+	    if (vendorProp in builtinStyle) {
+	      return vendorProp;
+	    }else{
+	      return prop;
+	    }
+
+	  } else {
+
+	    for (var i = 0; i < prefixes.length; ++i) {
+	      vendorProp = prefixes[i] + UpperProp;
+	      if (vendorProp in builtinStyle) {
+	        domVendorPrefix = prefixes[i];
+	        return vendorProp;
+	      }else {
+	        return prop;
+	      }
+	    }
+	  }
+	}
+
+
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var insertRule = __webpack_require__(165);
+	var vendorPrefix = __webpack_require__(166)();
+	var index = 0;
+
+	module.exports = function(keyframes) {
+	  // random name
+	  var name = 'anim_' + (++index) + (+new Date);
+	  var css = "@" + vendorPrefix + "keyframes " + name + " {";
+
+	  for (var key in keyframes) {
+	    css += key + " {";
+
+	    for (var property in keyframes[key]) {
+	      var part = ":" + keyframes[key][property] + ";";
+	      // We do vendor prefix for every property
+	      css += vendorPrefix + property + part;
+	      css += property + part;
+	    }
+
+	    css += "}";
+	  }
+
+	  css += "}";
+
+	  insertRule(css);
+
+	  return name
+	}
+
+
+/***/ },
+/* 165 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var extraSheet;
+
+	module.exports = function(css) {
+
+	  if (!extraSheet) {
+	    // First time, create an extra stylesheet for adding rules
+	    extraSheet = document.createElement('style');
+	    document.getElementsByTagName('head')[0].appendChild(extraSheet);
+	    // Keep reference to actual StyleSheet object (`styleSheet` for IE < 9)
+	    extraSheet = extraSheet.sheet || extraSheet.styleSheet;
+	  }
+
+	  var index = (extraSheet.cssRules || extraSheet.rules).length;
+	  extraSheet.insertRule(css, index);
+
+	  return extraSheet;
+	}
+
+
+/***/ },
+/* 166 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var cssVendorPrefix;
+
+	module.exports = function() {
+
+	  if (cssVendorPrefix) return cssVendorPrefix;
+
+	  var styles = window.getComputedStyle(document.documentElement, '');
+	  var pre = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o']))[1];
+
+	  return cssVendorPrefix = '-' + pre + '-';
+	}
+
+
+/***/ },
+/* 167 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Promise = __webpack_require__(168);
+	var $ = __webpack_require__(177);
 	var config = __webpack_require__(158);
 	var apiList, result = {};
 
@@ -21436,34 +21728,34 @@
 
 
 /***/ },
-/* 162 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(163)
+	module.exports = __webpack_require__(169)
 
 
 /***/ },
-/* 163 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(164);
-	__webpack_require__(166);
-	__webpack_require__(167);
-	__webpack_require__(168);
-	__webpack_require__(169);
+	module.exports = __webpack_require__(170);
+	__webpack_require__(172);
+	__webpack_require__(173);
+	__webpack_require__(174);
+	__webpack_require__(175);
 
 
 /***/ },
-/* 164 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var asap = __webpack_require__(165);
+	var asap = __webpack_require__(171);
 
 	function noop() {}
 
@@ -21648,7 +21940,7 @@
 
 
 /***/ },
-/* 165 */
+/* 171 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -21875,12 +22167,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 166 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Promise = __webpack_require__(164);
+	var Promise = __webpack_require__(170);
 
 	module.exports = Promise;
 	Promise.prototype.done = function (onFulfilled, onRejected) {
@@ -21894,12 +22186,12 @@
 
 
 /***/ },
-/* 167 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Promise = __webpack_require__(164);
+	var Promise = __webpack_require__(170);
 
 	module.exports = Promise;
 	Promise.prototype['finally'] = function (f) {
@@ -21916,14 +22208,14 @@
 
 
 /***/ },
-/* 168 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	//This file contains the ES6 extensions to the core Promises/A+ API
 
-	var Promise = __webpack_require__(164);
+	var Promise = __webpack_require__(170);
 
 	module.exports = Promise;
 
@@ -22029,7 +22321,7 @@
 
 
 /***/ },
-/* 169 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22037,8 +22329,8 @@
 	// This file contains then/promise specific extensions that are only useful
 	// for node.js interop
 
-	var Promise = __webpack_require__(164);
-	var asap = __webpack_require__(170);
+	var Promise = __webpack_require__(170);
+	var asap = __webpack_require__(176);
 
 	module.exports = Promise;
 
@@ -22106,13 +22398,13 @@
 
 
 /***/ },
-/* 170 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	// rawAsap provides everything we need except exception management.
-	var rawAsap = __webpack_require__(165);
+	var rawAsap = __webpack_require__(171);
 	// RawTasks are recycled to reduce GC churn.
 	var freeTasks = [];
 	// We queue errors to ensure they are thrown in right order (FIFO).
@@ -22178,7 +22470,7 @@
 
 
 /***/ },
-/* 171 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -31394,7 +31686,7 @@
 
 
 /***/ },
-/* 172 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31404,7 +31696,7 @@
 
 	var React = __webpack_require__(1);
 	var RatchetLayout = React.createFactory(__webpack_require__(160));
-	var ServiceApi = __webpack_require__(161);
+	var ServiceApi = __webpack_require__(167);
 
 	var HomePage = React.createClass({displayName: "HomePage",
 
@@ -31454,7 +31746,7 @@
 	            React.createElement("p", {className: "login-label"}, "Enter your name"), 
 	            React.createElement("input", {type: "text", name: "userName", ref: "userName", placeholder: "Your Name", 
 	              value: this.state.model.userName, onChange: this.onChange}), 
-	            React.createElement("button", {className: "pull-right", onClick: this.onLoginClicked}, "Login")
+	            React.createElement("button", {className: "btn-add u-full-width", onClick: this.onLoginClicked}, "Login")
 	          )
 	        )
 	      )
@@ -31466,7 +31758,7 @@
 
 
 /***/ },
-/* 173 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31476,7 +31768,8 @@
 
 	var React = __webpack_require__(1);
 	var RatchetLayout = React.createFactory(__webpack_require__(160));
-	var ServiceApi = __webpack_require__(161);
+	var Loader = __webpack_require__(161);
+	var ServiceApi = __webpack_require__(167);
 
 	var ContactPage = React.createClass({displayName: "ContactPage",
 
@@ -31493,7 +31786,8 @@
 	    return {
 	      user: user,
 	      userId : userId,
-	      dataContext: []
+	      dataContext: [],
+	      isLoading: true
 	    };
 	  },
 
@@ -31508,7 +31802,10 @@
 	        }
 	      }
 
-	      this.setState({dataContext: currentData.destinations});
+	      this.setState({
+	        dataContext: currentData.destinations,
+	        isLoading: false
+	      });
 	    }.bind(this));
 	  },
 
@@ -31560,6 +31857,16 @@
 
 	  render: function() {
 	    var renderNotes = '';
+	    var renderLoader = '';
+
+	    if (this.state.isLoading) {
+	      renderLoader = (
+	        React.createElement("div", {className: "loader-wrapper"}, 
+	          React.createElement(Loader, {color: "#985321", size: "16px", margin: "4px"})
+	        )
+	      );
+	    }
+
 	    if (this.state.dataContext.length > 0) {
 	      renderNotes = (
 	        React.createElement("div", null, 
@@ -31584,10 +31891,11 @@
 
 	    return (
 	      React.createElement("div", null, 
+	        renderLoader, 
 	        React.createElement("form", null, 
 	          React.createElement("input", {type: "text", placeholder: "Enter your destination", 
 	            value: this.state.destination, onChange: this.onDestinationChanged}), 
-	          React.createElement("button", {className: "u-full-width", onClick: this.onAddDestinationClicked}, "Add")
+	          React.createElement("button", {className: "btn-add u-full-width", onClick: this.onAddDestinationClicked}, "Add")
 	        ), 
 	        renderNotes
 	      )
